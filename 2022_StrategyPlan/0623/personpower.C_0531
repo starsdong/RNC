@@ -1,0 +1,69 @@
+#include "style.C+"
+#include "draw.C+"
+
+void personpower()
+{
+  style();
+
+  const Int_t N = 40;
+  const Int_t NN = 5;
+
+  const Int_t NP = 4;
+  const Char_t *Name[NP] = {"CBM","EIC","sPHENIX","STAR"};
+
+  const Double_t frac[NP][NN][2] = {{{0., 0.333}, {2., 0.333}, {18., 0.75}, {26., 1.5}, {40., 1.5}},
+				    {{0., 0.833}, {2., 0.833}, {18., 1.25}, {36., 3.5}, {40., 3.5}},
+				    {{0., 1.500}, {2., 1.500}, {10., 3.5}, {26., 3.75}, {30, 3.75}},
+				    {{0., 4.0}, {10., 4.0}, {20., 4.0}, {30., 4.0}, {40, 4.0}}
+  };
+
+  TCanvas *c1 = new TCanvas("c1","",1200, 600);
+  c1->SetLeftMargin(0.09);
+  c1->SetGridx();
+  c1->SetGridy();
+  c1->Draw();
+
+  double x1 = 0;
+  double x2 = N;
+  double y1 = 0;
+  double y2 = 4.5;
+  TH1D *h0 = new TH1D("h0","",1,x1,x2);
+  h0->GetXaxis()->CenterTitle();
+  h0->GetXaxis()->SetTitleOffset(999.);
+  h0->GetXaxis()->SetLabelOffset(999.);
+  h0->SetYTitle("PostDoc FTEs");
+  h0->GetYaxis()->SetTitleOffset(0.6);
+  h0->GetYaxis()->SetTitleSize(0.06);
+  h0->SetMaximum(y2);
+  h0->SetMinimum(y1);
+  h0->Draw();
+  
+  for(int i=0;i<NP;i++) {
+    for(int j=0;j<NN-1;j++) {
+      drawLine(frac[i][j][0], frac[i][j][1], frac[i][j+1][0], frac[i][j+1][1], 3, 1, 4-i);
+    }
+  }
+
+  drawHistBox(x1,x2,y1,y2);
+
+  const Double_t offset = 0.5;
+  const Int_t NL = 6;
+  const Int_t XP[NL] = {0, 2, 10, 18, 26, 36};
+  Char_t *XTitle[NL];
+  for(int i=0;i<NL;i++) {
+    int year = (XP[i]+3)/4 + 22;
+    int qua = (XP[i]+3)%4 + 1;
+    
+    drawText(XP[i]-offset, -1, Form("FY%dQ%d",year,qua), 42, 0.05, 75);
+  }
+
+  drawText(3, 3.0, "STAR", 52, 0.06);
+  drawText(13, 2.2, "sPHENIX", 52, 0.06);
+  drawText(36, 2.4, "EIC", 52, 0.06);
+  drawText(36, 0.7, "CBM", 52, 0.06);
+
+  c1->Update();
+  c1->SaveAs("personpower.pdf");
+  c1->SaveAs("personpower.png");
+  
+}
