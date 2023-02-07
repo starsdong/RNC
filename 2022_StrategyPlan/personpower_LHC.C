@@ -20,7 +20,8 @@ void personpower_LHC(int config = 0)
     {{{0., 5.1}, {8., 6.3}, {20., 6.5}, {40, 6.7}, {40, 6.7}}},					
     // CE
     //    {{{0., 5.3}, {8., 5.7}, {20., 6.1}, {40, 6.5}, {40, 6.5}}}
-    {{{0., 6.3}, {8., 5.7}, {20., 6.1}, {40, 6.5}, {40, 6.5}}}   // 2 FTEs added by for the first two years
+    //    {{{0., 6.3}, {8., 5.7}, {20., 6.1}, {40, 6.5}, {40, 6.5}}}   // 2 FTEs added by for the first two years
+    {{{0., 5.2}, {8., 4.6}, {20., 5.0}, {40, 5.4}, {40, 5.4}}}   // 2 FTEs added by for the first two years // reduce by 1.1 everywhere - 0206
   };
 
   Double_t frac[NP][NN][2];

@@ -67,7 +67,8 @@ void personpower(int config = 0)
       } else if(config==1) {
 	yyI2[NP-1][j] = 25.7;
       } else if(config==2) {
-	yyI2[NP-1][j] = 25.5 - (25.5-24.7)*j/ISkip;
+	//	yyI2[NP-1][j] = 25.5 - (25.5-24.7)*j/ISkip;
+	yyI2[NP-1][j] = 20.8; //24.5 - (24.5-23.7)*j/ISkip;
       }
     }
     if(j>=ISkip && j<ISkip2+1) {
@@ -76,7 +77,8 @@ void personpower(int config = 0)
       } else if(config==1) {
 	yyI[NP-1][j] = 27.2;
       } else if(config==2) {
-	yyI[NP-1][j] = 23.3;
+	//	yyI[NP-1][j] = 23.3;
+	yyI[NP-1][j] = 20.8;
       }
     }
     if(j>=ISkip2) {
@@ -85,11 +87,13 @@ void personpower(int config = 0)
       } else if(config==1) {
 	yyI2[NP-1][j] = 25.7;
       } else if(config==2) {
-	yyI2[NP-1][j] = 23.3;
+	//	yyI2[NP-1][j] = 23.3;
+	yyI2[NP-1][j] = 20.8;
       }
     }
   }
-  
+
+  /*
 
   Double_t yAve[NP][3];
   Double_t yAve2[NP][3];
@@ -154,7 +158,7 @@ void personpower(int config = 0)
   }
   cout << setw(10) << "Total" << ":\t " << setw(10) << ySum0 << "\t" << setw(10) << ySum[0] //<< "\t" << setw(10) << ySum2[0]
        << "\t" << setw(10) << ySum[1] << "\t" << setw(10) << ySum[2] << endl;
-  
+  */  
 
   
   TCanvas *c1 = new TCanvas("c1","",1200, 750);
@@ -165,9 +169,9 @@ void personpower(int config = 0)
   c1->Draw();
 
 #ifdef CBM
-  const Double_t YMAX[NC] = {33., 33., 33.};
+  const Double_t YMAX[NC] = {33., 33., 36.};
 #else
-  const Double_t YMAX[NC] = {32., 32., 32.};
+  const Double_t YMAX[NC] = {32., 32., 24.};
 #endif
   
   double x1 = 0;
@@ -208,12 +212,20 @@ void personpower(int config = 0)
 #endif
   
 
+  Double_t yAve[NP][3], y0[NP];
+  const Int_t aveEdge[3] = {8, 20, 40};
+  cout << setw(10) << "Project \t" << setw(10) << " t=0 \t" << setw(10) << " 0-2yr\t" // << setw(10) << " 0-2yr(2)\t"
+       << setw(10) << "3-5yr\t" << setw(10) << "6-10yr" << endl;
+  ofstream outData;
+  double ySum0 = 0;
+  double ySum[3] = {0, 0, 0};
+  
   TGraphErrors *gr_A[NP];
   TGraphErrors *gr_A2[NP];  // 0-2yr
   TGraphErrors *gr_A3[NP];  // 8-10yr
   for(int i=0;i<NP;i++) {
     double xx_tmp[N+1], yy_tmp[N+1], yy_e_tmp[N+1];
-    double yy2_tmp[N+1], yy2_e_tmp[N+1];
+    double yy2_tmp[N+1], yy2_e_tmp[N+1];    
     for(int j=0;j<N+1;j++) {
       if(i==0) {
 	yy_tmp[j] = yyI[i][j]/2.0;
@@ -228,10 +240,36 @@ void personpower(int config = 0)
 	yy2_e_tmp[j] = fabs(yyI2[NP-3][j] - yyI2[NP-1][j])/2.0;
       }
     }
+
+    if(i==NP-1) continue;    
+    outData.open(Form("output_check/%s.txt",Name[i]));
+    for(int jj=0;jj<3;jj++) { yAve[i][jj] = 0; }
+    
     if(i<NP-2) {
       gr_A[i] = new TGraphErrors(N+1, xx, yy_tmp, 0, yy_e_tmp);
       gr_A[i]->SetFillColorAlpha(kColor[i],0.4);
       gr_A[i]->Draw("e3");
+
+      for(int j=0;j<N+1;j++) {
+	outData << setw(6) << j << setw(12) <<  yy_e_tmp[j]*2 << endl;
+	
+	if(j>0 && j<aveEdge[0]) { yAve[i][0] += yy_e_tmp[j]*2; }
+	if(j>aveEdge[0] && j<aveEdge[1]) { yAve[i][1] += yy_e_tmp[j]*2; }
+	if(j>aveEdge[1] && j<aveEdge[2]) { yAve[i][2] += yy_e_tmp[j]*2; }
+	if(j==0) { yAve[i][0] += yy_e_tmp[j]; }
+	if(j==aveEdge[0]) {
+	  yAve[i][0] += yy_e_tmp[j];
+	  yAve[i][1] += yy_e_tmp[j];
+	}
+	if(j==aveEdge[1]) {
+	  yAve[i][1] += yy_e_tmp[j];
+	  yAve[i][2] += yy_e_tmp[j];
+	}
+	if(j==aveEdge[2]) { yAve[i][2] += yy_e_tmp[j]; }
+      }
+      y0[i] = yy_e_tmp[0]*2;
+
+      
     } else if(i<NP-1) {
       gr_A[i] = new TGraphErrors(ISkip2+1-ISkip, xx+ISkip, yy_tmp+ISkip, 0, yy_e_tmp+ISkip);
       gr_A[i]->SetFillColorAlpha(kColor[i],0.4);
@@ -242,11 +280,54 @@ void personpower(int config = 0)
       gr_A3[i] = new TGraphErrors(N-ISkip2+1, xx+ISkip2, yy2_tmp+ISkip2, 0, yy2_e_tmp+ISkip2);
       gr_A3[i]->SetFillColorAlpha(kColor[i],0.4);
       gr_A3[i]->Draw("e3");
-      
+
+      for(int j=0;j<N+1;j++) {
+	outData << setw(6) << j << setw(12) <<  yy_e_tmp[j]*2 << setw(12) << yy2_e_tmp[j]*2 << endl;
+	
+	if(j>0 && j<aveEdge[0]) { yAve[i][0] += yy2_e_tmp[j]*2; }
+	if(j>aveEdge[0] && j<aveEdge[1]) { yAve[i][1] += yy_e_tmp[j]*2; }
+	if(j>aveEdge[1] && j<ISkip2) { yAve[i][2] += yy_e_tmp[j]*2; }
+	if(j>ISkip2 && j<aveEdge[2]) { yAve[i][2] += yy2_e_tmp[j]*2; }
+	if(j==0) { yAve[i][0] += yy2_e_tmp[j]; }
+	if(j==aveEdge[0]) {
+	  yAve[i][0] += yy2_e_tmp[j];
+	  yAve[i][1] += yy_e_tmp[j];
+	}
+	if(j==aveEdge[1]) {
+	  yAve[i][1] += yy_e_tmp[j];
+	  yAve[i][2] += yy_e_tmp[j];
+	}
+	if(j==ISkip2) {
+	  yAve[i][2] += yy_e_tmp[j];
+	  yAve[i][2] += yy2_e_tmp[j];	  
+	}
+	if(j==aveEdge[2]) { yAve[i][2] += yy2_e_tmp[j]; }
+      }
+      y0[i] = yy2_e_tmp[0]*2;
     }
+
+
+    yAve[i][0] /= 8.;
+    yAve[i][1] /= 12.;
+    yAve[i][2] /= 20.;
+    
+    outData.close();
+    
+    cout << setw(10) << Name[i] << ":\t " << setw(10) << y0[i] << "\t" << setw(10) << yAve[i][0] //<< "\t" << setw(10) << yAve2[i][0]
+	 << "\t" << setw(10) << yAve[i][1] << "\t" << setw(10) << yAve[i][2] << endl;
+    
+    ySum0 += y0[i];
+    ySum[0] += yAve[i][0];
+    ySum[1] += yAve[i][1];
+    ySum[2] += yAve[i][2];
+    
     //    gr_A[i]->Print();
   }
 
+
+  cout << setw(10) << "Total" << ":\t " << setw(10) << ySum0 << "\t" << setw(10) << ySum[0] //<< "\t" << setw(10) << ySum2[0]
+       << "\t" << setw(10) << ySum[1] << "\t" << setw(10) << ySum[2] << endl;
+  
   
   for(int i=0;i<NP;i++) {
     if(i==NP-2) continue;
@@ -319,7 +400,7 @@ void personpower(int config = 0)
   const Double_t yPos[NC][NP] = {
     {1.0, 1.0, 3.2, 8.8, 7.6, 0, 18.6},
     {1.0, 1.0, 2.5, 7.8, 6.6, 0, 17.6},
-    {1.0, 1.0, 2.4, 8.2, 7., 0, 15.6}
+    {1.0, 1.0, 2.4, 8.2, 6., 0, 14.6}
   };
 #endif
     

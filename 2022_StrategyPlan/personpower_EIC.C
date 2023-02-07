@@ -32,7 +32,9 @@ void personpower_EIC(int config = 0)
     {{{0., 1.5}, {8., 1.3}, {20., 1.3}, {40, 1.3}, {40, 1.3}},
      {{0., 1.6}, {8., 1.8}, {20., 2.8}, {40, 3.8}, {40, 3.8}},
      {{0., 3.8}, {8., 5.6}, {20., 7.6}, {40, 9.0}, {40, 9.0}},
+     //     {{0., 11.0}, {8., 11.8}, {20., 15.4}, {40, 17.2}, {40, 17.2}}}   //  2 FTEs added by for the first two years
      {{0., 11.0}, {8., 11.8}, {20., 15.4}, {40, 17.2}, {40, 17.2}}}   //  2 FTEs added by for the first two years
+    ////    // request by Reiner, reduce EIC by 3 in first two years, 1.5 in later years - 0206
   };
 
   Double_t frac[NP][NN][2];
