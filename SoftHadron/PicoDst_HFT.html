@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>PicoDst for HFT analysis</title>
+  </head>
+  <body>
+    <h2><u><b>New Changes in StPicoTrack</b></u></h2>
+    <br>
+    The Run14 picoDst structure is modified to allow using tracks with
+    HFT hits and using the full DcaGeometry in StPicoTrack. Please check
+    out the current StPicoDstMaker code from CVS repository<br>
+    <br>
+    cvs co offline/users/dongx/pico/source/StPicoDstMaker<br>
+    <br>
+    ===========<br>
+    1)&nbsp; To have a good HFT track, one will need to require the
+    track to have<br>
+    <meta charset="utf-8">
+    <div style="color: rgb(34, 34, 34); font-family: arial, sans-serif;
+      font-size: small; font-style: normal; font-variant: normal;
+      font-weight: normal; letter-spacing: normal; line-height: normal;
+      orphans: auto; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: auto;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);">&nbsp;&nbsp;&nbsp;&nbsp;
+      One hit on PXL inner layer,&nbsp; at least one hit on PXL outer
+      layer and at least one hit on IST<br>
+    </div>
+    <br class="Apple-interchange-newline">
+    StPicoTrack:isHFTrack() functions tell whether the track satisfies
+    this condition or not.<br>
+    <br>
+    ===========<br>
+    2) DcaGeometry full members + errorMatrix are added to PicoDst. <br>
+    <br>
+    To get the full dcaGeometry,&nbsp;&nbsp; use function
+    StPicoTrack::dcaGeometry()<br>
+    To get the helix only, use function StPicoTrack:helix()<br>
+    <br>
+    <div> ===========<br>
+      3) Other changes in StPicoTrack<br>
+      <br>
+      &nbsp;&nbsp;&nbsp; - mGMomentum variables are removed since they
+      are redundant once we have the full DcaGeometry.<br>
+      &nbsp;&nbsp;&nbsp; - mOriginX,Y,Z position stored now are the
+      first measured position (for QA and cuts) in the precision up to
+      0.01 cm.<br>
+      &nbsp;&nbsp;&nbsp; - mChi2Prob, mFlowFlag are removed.<br>
+      &nbsp;&nbsp;&nbsp; - To access the BTOF/BEMC/MTD information, one
+      would need to do in the following way<br>
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a) use
+      StPicoTrack:btofPidTraitsIndex() to get an index to the
+      StPicoBTofPidTraits array. If there is no BTOF match, return -1.<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b) one need to put a protection,
+      that if this index is &gt;=0, then one can use&nbsp;&nbsp;
+      StPicoDst::btofPidTraits(int i) function to get the corresponding
+      BTofPidTraits with i is the index obtained from a).<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c) then one can access all the
+      relevant BTOF/BEMC/MTD information with the member functions.<br>
+      <br>
+      <br>
+      <br>
+      <br class="Apple-interchange-newline">
+    </div>
+    <br class="Apple-interchange-newline">
+  </body>
+</html>
