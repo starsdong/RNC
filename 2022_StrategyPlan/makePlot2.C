@@ -92,7 +92,7 @@ void makePlot2(int config=0)
   
   TGraph *gr[NP];
   const Int_t kColor[NP] = {kGreen, kPink-4, kCyan, kOrange, kYellow, kBlue-3};
-  const Int_t kColorLine[NP] = {kYellow, kPink-4, kCyan, kOrange, kGreen+1, kBlue-3};
+  const Int_t kColorLine[NP] = {kGreen-6, kPink-4, kCyan, kOrange, kYellow+1, kBlue-3};
   
   Double_t yAve[NP][3], y0[NP];
   const Int_t aveEdge[3] = {8, 20, 40};
@@ -178,7 +178,7 @@ void makePlot2(int config=0)
   }
 
   const Double_t xPos[NP] = {12.5, 1.5, 20, 1.5, 10, 31};
-  const Double_t yPos[NP] = {0.5, 2.5, 5., 9.5, 9.2, 14.6};
+  const Double_t yPos[NP] = {0.5, 2.3, 5., 9.3, 9.2, 14.6};
   
   for(int i=0;i<NP;i++) {
     double yt = yPos[i] * sc;

@@ -20,7 +20,8 @@ void personpower_ME(const Int_t config=0)
     {{{0., 2.0}, {8., 1.8}, {20., 1.6}, {40, 1.6}}},
     // CE
     //    {{{0., 1.7}, {8., 1.7}, {20., 1.7}, {40, 1.3}}}
-    {{{0., 2.4}, {8., 1.8}, {20., 1.6}, {40, 1.4}}}  // 2 FTEs added by for the first two years
+    //    {{{0., 2.4}, {8., 1.8}, {20., 1.6}, {40, 1.4}}}  // 2 FTEs added by for the first two years
+    {{{0., 1.9}, {8., 1.9}, {20., 1.5}, {40, 1.1}}}  // 2 FTEs added by for the first two years
   };
   
   Double_t frac[NP][NN][2];
